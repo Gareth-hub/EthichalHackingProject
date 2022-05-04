@@ -15,8 +15,7 @@ echo "Usage: ./ipsweeper.sh xxx.xxx.xxx"
 echo "Example: ./ipsweeper.sh 198.162.102 mytextfile.txt" #command used to run the script and assign the values targetip and sweeplist.
 else #if a valid ip address has been entered the sweep will initialize
 for ip in `seq 1 254`; do #this means that for all the ips between the ip address 192.168.0.1 to 192.168.0.254 will be scanned 
-ping -c 1 $1.$ip | grep "64 bytes" | cut -d " " -f 4 | tr -d ":" > $2 & #grep is used to display that ip addresses that respond to the pings while cut is used to remove the spaces between the information,
-                                                                        #-f limits the fields of information we want returned and tr -d is used to remove the ':' at the end of an ip address. 
-                                                                        #$2 is used here to insert this filtered information in to a textfile the name of this file was assigned by the user 
-done
-fi
+ping -c 1 $1.$ip | grep "64 bytes" | cut -d " " -f 4 | tr -d ":" & #grep is used to display that ip addresses that respond to the pings while cut is used to remove the spaces between the information,
+                                                                        #-f limits the fields of information we want returned and tr -d is used to remove the ':' at the end of an ip address.        
+done > $2 # #$2 is used here to insert this filtered information in to a textfile the name of this file was assigned by the user 
+fi #fi closes the if statement and exits the script
