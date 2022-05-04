@@ -18,4 +18,4 @@ for ip in `seq 1 254`; do #this means that for all the ips between the ip addres
 ping -c 1 $1.$ip | grep "64 bytes" | cut -d " " -f 4 | tr -d ":" & #grep is used to display that ip addresses that respond to the pings while cut is used to remove the spaces between the information,
                                                                         #-f limits the fields of information we want returned and tr -d is used to remove the ':' at the end of an ip address.        
 done > $2 # #$2 is used here to insert this filtered information in to a textfile the name of this file was assigned by the user 
-fi #fi closes the if statement and exits the script
+fi #fi closes the if statement and exits the script.
