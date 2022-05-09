@@ -155,16 +155,16 @@ if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]
                 if [ "$CHOICE" = "c" ]; then
                 echo "PLease enter the name and location of your wordlist e.g if your wordlist is stored in Documents enter Documents/ followed by the name of your wordlist"
                 read -i $LIST -e LIST
-                sudo aircrack-ng $LIST $FILE-01.cap
+                sudo aircrack-ng -w $LIST $FILE-01.cap
                 elif [ "$CHOICE" = "d" ]; then
                 sudo aircrack-ng rockyou.txt $FILE-01.cap
                 else echo "Not a valid option! Using default list instead "
                 echo ""
-                sudo aircrack-ng rockyou.txt $FILE-01.cap
+                sudo aircrack-ng -w rockyou.txt $FILE-01.cap
                 fi
                 elif [ "$SOURCE" = "n" ]; then
-                echo "Since WPA Handshake was not captured we will need to restart the machine to try the process again"
-                else echo "Not a valid option! Therefore the process has been halted. Restart Required to try again "
+                echo "Since WPA Handshake was not captured we will need to restart the process if you face errors retrying this you need to restart your machine"
+                else echo "Not a valid option! Therefore the process has been stopped."
                 echo ""
                 fi
 echo ""
