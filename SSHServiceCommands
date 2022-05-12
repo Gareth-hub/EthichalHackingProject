@@ -1,0 +1,23 @@
+#The basic SSH Commands to check the status of the service, start the service and stop it.
+
+#First check if you have the ssh service on your machine
+apt list openssh-server
+
+#If you do not have it then install it
+sudo apt install openssh-server
+
+#Check if the ssh service is running on your device
+systemctl status ssh.service
+
+#Start the SSH Service if you wish to connect to your machine remotely or accept remote connections through Secure Shell
+systemctl start ssh.service
+
+#To disable Secure Shell connections and protect your machine from unauthorized remote connections that could put your machine at risk
+systemctl stop ssh.service
+
+#To enable the ssh service to start whenever the machine boots
+systemctl enable ssh.service
+
+#To disable the ssh service and prevent it from starting whenever the machine boots
+systemctl disable ssh.service
+
