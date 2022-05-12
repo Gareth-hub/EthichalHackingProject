@@ -1,0 +1,8 @@
+#!/bin/bash
+
+#installs a list of wordlists commonly used with Kali's tools
+sudo apt install wordlists
+#Unzips the rockyou.txt file that will be used in the project
+sudo gzip -d /usr/share/wordlists/rockyou.txt.gz 
+#Gives permissions to the text file so it can be run on the system
+sudo chmod +x rockyou.txt
