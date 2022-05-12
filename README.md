@@ -40,6 +40,28 @@ Alternatively to download all the scripts from the project you can use the comma
 
 $ git clone https://github.com/Gareth-hub/EthichalHackingProject
 
+# Modules included in this Script
+# Network Recon Modules
+- Show IP
+- Quick Scan
+- Detailed Scan
+- DNS Recon
+- IP Sweep
+- Ping Sweep 
+
+# DoS Attack Modules
+
+- ICMP Flood
+- IPSEC Dos
+- Distraction Scan
+
+# Ethical Hacking Modules
+- SSH Exploit Hydra + Nmap
+- Wifi Password Cracking
+- Wordlist Creation
+- Bluetooth Targeting
+- Router Exploitation
+
 # Disclaimer
  
 This script is only for educational use on authorized networks and devices. This script is provided with no form of guarantee or warranty as YOU are solely responsible for YOUR ACTIONS with this script. The creator holds no responsibility or liability for the actions taken by you.
