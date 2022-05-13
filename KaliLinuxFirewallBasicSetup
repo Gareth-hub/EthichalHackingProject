@@ -1,0 +1,35 @@
+#In order to set up a firewall in Kali Linux you must first install it, this can be done with the following command:
+sudo apt-get install ufw
+
+# Once installed you can then check what tools/apps are compatible with the firewall
+sudo ufw app list
+
+#The status of the firewall can be checked using either of the following two commands
+
+sudo ufw status
+
+#or 
+
+sudo ufw status verbose
+
+#In order to activate the firewall and enable it to run on system start up enter the following command:
+sudo ufw enable
+
+#This firewall can later be stopped and disabled from running on system start up by entering the following command:
+sudo ufw disable
+
+#If you wish for your firewall to block all names/outside connections then you can skip this part
+#Otherwise to approve a connection or name run the following commands
+#For connections use the command 'sudo ufw allow' followed by the port number as shown below
+sudo ufw allow 80/tcp
+
+#For names enter the command 'sudo ufw allow' and followed by the name as shown below
+sudo ufw allow myself
+
+#If you chose to implement these permission you can check them by running the following command:
+sudo ufw status verbose
+
+#An example of how a firewall can be used on a website to secure it
+#denying alll connections from http 80 service and allowing http 443 service protects a website from a hackers potential exploits
+sudo ufw deny 80
+sudo ufw allow 443
